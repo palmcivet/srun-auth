@@ -1,7 +1,6 @@
 # !/bin/sh
 # annote: For authentication to Srun.
 # author: Palm Civet
-# date: 2020.05.18
 
 base() {
 	res=`echo "$1" | base64`
@@ -47,8 +46,8 @@ curl --location --request POST 'http://10.1.254.72:803/include/auth_action.php' 
 --header 'dnt: 1' \
 --header 'host: 10.1.254.72:803' \
 --header 'origin: http://10.1.254.72:803' \
---header 'referer: http://10.1.254.72:803/srun_portal_pcyd.php?ac_id=2&wlanuserip=10.45.1.63&wlanacname=&wlanuserfirsturl=http://192.168.137.100/index_2.html?url=' \
+--header "referer: http://10.1.254.72:803/srun_portal_pcyd.php?ac_id=2&wlanuserip="${IP}"&wlanacname=&wlanuserfirsturl=" \
 --header 'user-agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:76.0) Gecko/20100101 Firefox/76.0' \
 --header 'x-requested-with: XMLHttpRequest' \
 --header 'Content-Type: text/plain' \
---data-raw "action=login&username="${NAME}"&password={B}"${PASS}"&ac_id=2&user_ip=10.45.1.63&nas_ip=&user_mac=&save_me=0&ajax=1"
+--data-raw "action=login&username="${NAME}"&password={B}"${PASS}"&ac_id=2&user_ip="${IP}"&nas_ip=&user_mac=&save_me=0&ajax=1"
