@@ -61,6 +61,18 @@ function login() {
 	--data-raw "action=login&username="${1}"&password={B}"${2}"&ac_id=2&user_ip="${3}"&nas_ip=&user_mac=&save_me=0&ajax=1"
 }
 
+# detect curl & base64
+if hash curl 2 > /dev/null; then
+	echo "Can't find curl"
+	return 1
+elif hash base64 2 > /dev/null; then
+	echo "Can't find base64"
+	return 1
+else
+	return 0
+fi
+
+# parse options
 while getopts 'u:p:' opt
 do
     case $opt in
@@ -76,6 +88,7 @@ do
     esac
 done
 
+# check arguments
 if test -z "$USER" || test -z "$PASS"; then
     echo "Usage: srun-auth.sh -u yourName -p yourPass"
     exit 1
@@ -91,7 +104,17 @@ else
         fi
     # IP is empty
     else
-        # TODO
+		OPTION=`ifconfig | grep 'inet' | grep -v '127.0.0.1' | cut -d : -f 2 | awk '{print $2}' | sed -e '/^$/d'`
+		echo "$OPTION" | nl
+		EDGE=`echo "$OPTION" | awk 'END{print NR}'`
+
+		read -p "Select IP(1-${EDGE}):" INDEX
+		if [[ $INDEX -le $EDGE ]]; then
+			IP=`echo "$OPTION" | sed -n "$INDEX"p`
+		else
+			echo "Invalid number"
+			exit 1
+		fi
     fi
     login $NAME $PASS $IP
 fi
